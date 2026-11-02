@@ -9,6 +9,7 @@ use App\Http\Controllers\UserController;
 use App\Http\Controllers\SettingController;
 use App\Http\Controllers\StikerController;
 use App\Http\Controllers\CategoryController;
+use App\Http\Controllers\ProduksController;
 
 Route::get('/', [HomeController::class, 'index']);
 
@@ -29,6 +30,7 @@ Route::prefix('admin')->name('admin.')->group(function () {
     Route::resource('dashboard', DashboardController::class);
     Route::resource('user', UserController::class);
     Route::resource('category', CategoryController::class);
+    Route::resource('produk', ProduksController::class);
 
     Route::get('setting', [SettingController::class, 'index'])->name('setting');
     Route::post('setting', [SettingController::class, 'update'])->name('setting.update');
