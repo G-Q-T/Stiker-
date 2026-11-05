@@ -83,7 +83,8 @@ class CategoryController extends Controller
         ]);
         $datacategory['slug'] = $datacategory['slug'] ? Str::slug($datacategory['slug']) : Str::slug($datacategory['name']);
         $datacategory['sort_order'] = $datacategory['sort_order'] ?? 0;
-        $category->update($datacategory);
+        $category->
+        update($datacategory);
         return redirect()->route('admin.category.index')->with('succes', "kategori produk berhasil di update");
     }
 

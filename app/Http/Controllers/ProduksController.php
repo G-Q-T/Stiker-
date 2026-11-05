@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\category;
 use App\Models\produk;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 
 class ProduksController extends Controller
@@ -17,6 +18,7 @@ class ProduksController extends Controller
         //
         $title = "manajemen Produk";
         $dataproduks = produk::with('category')->orderBy('id', 'DESC')->get();
+        // $datacategory = category::with('produks')->orderBy('id', 'DESC')->count();
         return view('admin.produk.index', compact('title', 'dataproduks'));
     }
 
@@ -25,10 +27,10 @@ class ProduksController extends Controller
      */
     public function create()
     {
-        $datacategory = category::all();
+        $dataproduk = category::get();
         $title = "create produk";
         //
-        return view('admin.produk.create', compact('title', 'datacategory'));
+        return view('admin.produk.create', compact('title', 'dataproduk'));
     }
 
     /**
@@ -42,8 +44,16 @@ class ProduksController extends Controller
             'category_id' => 'required|exists:categories,id',
             'image' => 'nullable|image|mimes:png,jpg,jpeg,gif|max:2048',
             'name' => 'string|required|max:60',
-            'stock' => 'required|integer',
-            'price' => 'required|integer'
+            'slug' => 'nullable|string|unique:produks,slug',
+            'price' => 'required|integer',
+            'price_art_carton' => 'nullable|integer',
+            'price_art_paper' => 'nullable|integer',
+            'price_art_hvs' => 'nullable|integer',
+            'price_Doft' => 'nullable|integer',
+            'price_glossy' => 'nullable|integer',
+            'cutting_price' => 'nullable|integer',
+            'description' => 'nullable|string',
+            'brief_description' => 'nullable|string'
         ]);
 
         $pathImage = null;
@@ -56,8 +66,15 @@ class ProduksController extends Controller
             'category_id' => $apakek->category_id,
             'image' => $pathImage,
             'name' => $apakek->name,
-            'stock' => $apakek->stock,
             'price' => $apakek->price,
+            'price_art_carton' => $apakek->price_art_carton,
+            'price_art_paper' => $apakek->price_art_paper,
+            'price_art_hvs' => $apakek->price_art_hvs,
+            'price_Doft' => $apakek->price_Doft,
+            'price_glossy' => $apakek->price_glossy,
+            'cutting_price' => $apakek->cutting_price,
+            'description' => $apakek->description,
+            'brief_description' => $apakek->brief_description,
         ]);
         return redirect()->route('admin.produk.index')->with('succes', 'data produk berhasil ditambahkan');
     }
@@ -68,22 +85,48 @@ class ProduksController extends Controller
     public function show(string $id)
     {
         //
+
     }
 
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(string $id)
+    public function edit(produk $itemproduk)
     {
         //
+        $title = "Edit data produk";
+        return view('admin.produk.edit', compact('title', 'itemproduk'));
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, string $id)
+    public function update(Request $apakek, produk $itemproduk)
     {
         //
+        if ($apakek->hasFile('image')) {
+            # code...
+            if ($itemproduk->image) {
+                # code...
+                Storage::disk('public')->delete($itemproduk->image);
+            }
+            $aslikah['image'] = $itemproduk->file('image')->store('imageproduks', 'public');
+        }
+        $dataproduk = $apakek->validate([
+            'category_id' => 'required|exists:categories,id',
+            'image' => 'nullable|image|mimes:png,jpg,jpeg,gif|max:2048',
+            'name' => 'string|required|max:60',
+            'slug' => 'nullable|string|unique:produks,slug',
+            'price' => 'required|integer',
+            'price_art_carton' => 'nullable|integer',
+            'price_art_paper' => 'nullable|integer',
+            'price_art_hvs' => 'nullable|integer',
+            'price_Doft' => 'nullable|integer',
+            'price_glossy' => 'nullable|integer',
+            'cutting_price' => 'nullable|integer',
+            'description' => 'nullable|text',
+            'brief_description' => 'nullable|text'
+        ]);
     }
 
     /**
@@ -92,5 +135,12 @@ class ProduksController extends Controller
     public function destroy(string $id)
     {
         //
+        $dataproduk = produk::find($id);
+
+        if ($dataproduk->image) {
+            # code...
+            Storage::disk('public')->delete($dataproduk->image);
+        }
+        $dataproduk->delete();
     }
 }

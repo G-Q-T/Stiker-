@@ -10,8 +10,11 @@ use App\Http\Controllers\SettingController;
 use App\Http\Controllers\StikerController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\ProduksController;
+use App\Http\Controllers\CatalogController;
 
+// bagian home
 Route::get('/', [HomeController::class, 'index']);
+Route::get('/category/{slug}', [CatalogController::class, 'category'])->name('category.show');
 
 Route::get('belajar', [BelajarController::class, 'index']);
 Route::get('pertambahan', [BelajarController::class, 'pertambahan'])->name('pertambahan');

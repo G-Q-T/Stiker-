@@ -4,13 +4,13 @@
 @section('subtitle', 'membuat categoryproduk baru baru dengan akses panel admin')
 
 @section('content')
-    <form action="{{ route('admin.category.store') }}" method="post">
+    <form action="{{ route('admin.category.store') }}" method="post" enctype="multipart/form-data">
         @csrf
         <div class="mb-3">
             <label for="" class="form-label-custom">Nama</label>
             <input type="text" class="form-control" name="name" required value="{{ old('name') }}">
             @error('name')
-                <div class="invalid-feedback d-block">{{ $message }}</div>
+                <div c ass="invalid-feedback d-block">{{ $message }}</div>
             @enderror
         </div>
 
