@@ -33,6 +33,7 @@ class CategoryController extends Controller
     /**
      * Store a newly created resource in storage.
      */
+    // store category
     public function store(Request $simpancategory)
     {
         //

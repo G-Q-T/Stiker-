@@ -81,6 +81,18 @@
                       </a>
                   </li>
 
+                  <li class="sidebar-menu-item">
+                      <a href="{{ route('admin.category_blog.index') }}" class="sidebar-menu-link">
+                          <i class="bi bi-basket-fill"></i>
+                          <span>kategori blog</span>
+                      </a>
+                  </li>
+                  <li class="sidebar-menu-item">
+                      <a href="{{ route('admin.blog.index') }}" class="sidebar-menu-link">
+                          <i class="bi bi-basket-fill"></i>
+                          <span>blog</span>
+                      </a>
+                  </li>
               </ul>
               </li>
           </div>

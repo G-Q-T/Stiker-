@@ -530,7 +530,8 @@
                                                 <span class="fw-normal text-muted small">/ box</span>
                                             </div>
                                             <a class="btn btn-outline-primary btn-sm rounded-pill w-100 fw-semibold"
-                                                href="detail-produk.html">Lihat Opsi / Order</a>
+                                                href="{{ route('produk.show', $itemproduk->slug) }}">Lihat Opsi /
+                                                Order</a>
                                         </div>
                                     </div>
                                 </div>

@@ -123,7 +123,26 @@
     <script src="https://cdn.jsdelivr.net/npm/quill@2.0.3/dist/quill.js"></script>
     <script>
         const quill = new Quill('#editor', {
-            theme: 'snow'
+            theme: 'snow',
+            placeholder: 'Berikan deskripsi tentang produk...',
+            modules: {
+                toolbar: [
+                    ['bold', 'italic', 'underline'],
+                    [{
+                        'list': 'ordered'
+                    }, {
+                        'list': 'bullet'
+                    }],
+                    ['link'],
+                    ['clean']
+                ]
+            }
+        });
+
+        const form = document.querySelector('#editor').closest('form');
+
+        form.addEventListener('submit', function() {
+            document.querySelector('#description').value = quill.root.innerHTML;
         });
     </script>
 </body>

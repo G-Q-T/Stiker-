@@ -1,79 +1,172 @@
-@extends('admin.layout.app');
+```blade
+@extends('admin.layout.app')
 
-@section('title', 'manajemen produk')
-@section('subtitle', 'Pengelompokkan produk')
+@section('title', 'Manajemen Produk')
+@section('subtitle', 'Pengelolaan Data Produk')
 
 @section('content')
-    <div class="mb-3" align = "right">
-        <a href="{{ route('admin.produk.create') }}">
-            <i class="bi bi-plus-circle-fill"></i>
-            tambah produk
+
+    {{-- Header --}}
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h5 class="fw-bold mb-1">Data Produk</h5>
+            <small class="text-muted">Daftar seluruh produk yang tersedia</small>
+        </div>
+
+        <a href="{{ route('admin.produk.create') }}" class="btn btn-primary">
+            <i class="bi bi-plus-circle me-1"></i>
+            Tambah Produk
         </a>
-
     </div>
-    <div class="table-responsive">
-        <table class="table custom">
-            <thead>
-                <tr>
-                    <th>No</th>
-                    <th>Gambar</th>
-                    <th>kategori</th>
-                    <th>Nama Produk</th>
-                    <th>harga</th>
-                    <th>harga Carton</th>
-                    <th>harga paper</th>
-                    <th>harga hvs</th>
-                    <th>harga cutting</th>
-                    <th>harga laminating doft</th>
-                    <th>harga laminating glossy</th>
-                    <th>harga Potong</th>
-                    <th>deskripsi singkat</th>
-                    <th>deskripsi</th>
-                    <th>aksi</th>
-                </tr>
-            </thead>
-            <tbody>
-                @foreach ($dataproduks as $itemproduk)
-                    <tr>
-                        <td> {{ $loop->iteration }}</td>
-                        <td>
-                            @if ($itemproduk->image !== null)
-                                <img src="{{ asset('storage/' . $itemproduk->image) }}" width="100px"
-                                    alt="{{ $itemproduk->name ?? '' }}">
-                            @else
-                                <span class="text-muted"> Gambar tidak ditemukan</span>
-                            @endif
-                        </td>
-                        <td>{{ $itemproduk->category->name }}</td>
-                        <td>{{ $itemproduk->name }}</td>
-                        <td>{{ $itemproduk->slug }}</td>
-                        <td>Rp.{{ number_format($itemproduk->price) }}</td>
-                        <td>{{ $itemproduk->price_art_carton }}</td>
-                        <td>{{ $itemproduk->price_art_paper }}</td>
-                        <td>{{ $itemproduk->price_art_hvs }}</td>
-                        <td>{{ $itemproduk->cutting_price }}</td>
-                        <td>{{ $itemproduk->price_Doft }}</td>
-                        <td>{{ $itemproduk->price_glossy }}</td>
-                        <td>{{ $itemproduk->brief_description }}</td>
-                        <td>{{ $itemproduk->description }}</td>
-                        <td>
-                            <a href="{{ route('admin.produk.edit', $itemproduk->id) }}"class="table-btn-action"
-                                title = "edit">
-                                <i class="bi bi-pencil"></i>
-                            </a>
-                            <form action="#" method="post" class="d-inline"
-                                onsubmit = "return confirm('Apakah yakin ingin dihapus')">
-                                @csrf
-                                @method('DELETE')
-                                <button class="table-btn-action" title = "delete">
-                                    <i class="bi bi-trash"></i>
-                                </button>
 
-                            </form>
-                        </td>
-                    </tr>
-                @endforeach
-            </tbody>
-        </table>
+    {{-- Tabel Produk --}}
+    <div class="card border-0 shadow-sm">
+        <div class="card-body p-0">
+            <div class="table-responsive">
+                <table class="table table-hover align-middle mb-0">
+
+                    <thead class="table-light">
+                        <tr>
+                            <th class="text-center" width="60">No</th>
+                            <th width="110">Gambar</th>
+                            <th>Kategori</th>
+                            <th>Nama Produk</th>
+                            <th>Slug</th>
+                            <th>Harga Utama</th>
+                            <th>Art Carton</th>
+                            <th>Art Paper</th>
+                            <th>HVS</th>
+                            <th>Cutting</th>
+                            <th>Laminating Doft</th>
+                            <th>Laminating Glossy</th>
+                            <th>Deskripsi Singkat</th>
+                            <th>Deskripsi</th>
+                            <th class="text-center" width="110">Aksi</th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+                        @forelse ($dataproduks as $itemproduk)
+                            <tr>
+                                {{-- Nomor --}}
+                                <td class="text-center">
+                                    {{ $loop->iteration }}
+                                </td>
+
+                                {{-- Gambar --}}
+                                <td>
+                                    @if ($itemproduk->image)
+                                        <img src="{{ asset('storage/' . $itemproduk->image) }}"
+                                            alt="{{ $itemproduk->name }}" class="rounded border"
+                                            style="width: 65px; height: 65px; object-fit: cover;">
+                                    @else
+                                        <div class="bg-light rounded border d-flex align-items-center justify-content-center"
+                                            style="width: 65px; height: 65px;">
+                                            <i class="bi bi-image text-muted fs-4"></i>
+                                        </div>
+                                    @endif
+                                </td>
+
+                                {{-- Kategori --}}
+                                <td>
+                                    {{ $itemproduk->category->name ?? '-' }}
+                                </td>
+
+                                {{-- Nama Produk --}}
+                                <td class="fw-semibold">
+                                    {{ $itemproduk->name }}
+                                </td>
+
+                                {{-- Slug --}}
+                                <td>
+                                    <small class="text-muted">
+                                        {{ $itemproduk->slug ?? '-' }}
+                                    </small>
+                                </td>
+
+                                {{-- Harga --}}
+                                <td class="fw-semibold text-nowrap">
+                                    Rp {{ number_format($itemproduk->price, 0, ',', '.') }}
+                                </td>
+
+                                <td class="text-nowrap">
+                                    {{ $itemproduk->price_art_carton !== null
+                                        ? 'Rp ' . number_format($itemproduk->price_art_carton, 0, ',', '.')
+                                        : '-' }}
+                                </td>
+
+                                <td class="text-nowrap">
+                                    {{ $itemproduk->price_art_paper !== null
+                                        ? 'Rp ' . number_format($itemproduk->price_art_paper, 0, ',', '.')
+                                        : '-' }}
+                                </td>
+
+                                <td class="text-nowrap">
+                                    {{ $itemproduk->price_art_hvs !== null ? 'Rp ' . number_format($itemproduk->price_art_hvs, 0, ',', '.') : '-' }}
+                                </td>
+
+                                <td class="text-nowrap">
+                                    {{ $itemproduk->cutting_price !== null ? 'Rp ' . number_format($itemproduk->cutting_price, 0, ',', '.') : '-' }}
+                                </td>
+
+                                <td class="text-nowrap">
+                                    {{ $itemproduk->price_Doft !== null ? 'Rp ' . number_format($itemproduk->price_Doft, 0, ',', '.') : '-' }}
+                                </td>
+
+                                <td class="text-nowrap">
+                                    {{ $itemproduk->price_glossy !== null ? 'Rp ' . number_format($itemproduk->price_glossy, 0, ',', '.') : '-' }}
+                                </td>
+
+                                {{-- Deskripsi --}}
+                                <td style="min-width: 180px;">
+                                    {{ $itemproduk->brief_description ?? '-' }}
+                                </td>
+
+                                <td style="min-width: 200px;">
+                                    {!! $itemproduk->description !!}
+                                </td>
+
+                                {{-- Aksi --}}
+                                <td>
+                                    <div class="d-flex justify-content-center gap-2">
+
+                                        <a href="{{ route('admin.produk.edit', $itemproduk->id) }}"
+                                            class="btn btn-sm btn-outline-primary" title="Edit Produk">
+                                            <i class="bi bi-pencil-square"></i>
+                                        </a>
+
+                                        <form action="{{ route('admin.produk.destroy', $itemproduk->id) }}" method="POST"
+                                            onsubmit="return confirm('Apakah Anda yakin ingin menghapus produk ini?')">
+
+                                            @csrf
+                                            @method('DELETE')
+
+                                            <button type="submit" class="btn btn-sm btn-outline-danger"
+                                                title="Hapus Produk">
+                                                <i class="bi bi-trash"></i>
+                                            </button>
+                                        </form>
+
+                                    </div>
+                                </td>
+                            </tr>
+
+                        @empty
+                            <tr>
+                                <td colspan="15" class="text-center py-5">
+                                    <i class="bi bi-inbox fs-1 text-muted"></i>
+                                    <p class="text-muted mb-0 mt-2">
+                                        Belum ada data produk.
+                                    </p>
+                                </td>
+                            </tr>
+                        @endforelse
+                    </tbody>
+
+                </table>
+            </div>
+        </div>
     </div>
+
 @endsection
+```

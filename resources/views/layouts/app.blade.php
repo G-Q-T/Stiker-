@@ -17,6 +17,9 @@
         rel="stylesheet" />
     <!-- Core Theme & Layout Styles -->
     <link href="{{ asset('primagraphia-web/assets/css/style.css') }}" rel="stylesheet" />
+    <link href="{{ asset('primagraphia-web/assets/css/faq.css') }}" rel="stylesheet" />
+    <link href="{{ asset('primagraphia-web/assets/css/kontak.css') }}"rel="stylesheet" />
+    <link href="{{ asset('primagraphia-web/assets/css/blog.css') }}"rel="stylesheet" />
 </head>
 
 <body>
@@ -38,6 +41,9 @@
     <!-- END: FloatingWhatsApp -->
     <!-- Bootstrap 5 Bundle JS (Includes Popper) -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="{{ asset('primagraphia/assets/js/faq.js') }}"></script>
+    <script src="{{ asset('primagraphia/assets/js/kontak.js') }}"></script>
+    <script src="{{ asset('primagraphia/assets/js/blog.js') }}"></script>
 </body>
 
 </html>

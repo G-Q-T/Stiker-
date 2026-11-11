@@ -29,4 +29,11 @@ class LoginController extends Controller
 
         return back()->withErrors(['email' => 'email atau password salah.'])->onlyInput('email');
     }
+
+    public function logout(Request $request)
+    {
+
+        Auth::logout();
+        return redirect('admin/login');
+    }
 }

@@ -2,6 +2,7 @@
 
 namespace App\Providers;
 
+use App\Models\category;
 use App\Models\Setting;
 use Illuminate\Support\Facades\View;
 use Illuminate\Support\ServiceProvider;
@@ -23,6 +24,9 @@ class AppServiceProvider extends ServiceProvider
     {
         //
         $settings = Setting::pluck('value', 'key');
-        view::share('settings', $settings );
+        view::share('settings', $settings);
+
+        $categories = category::all();
+        view::share('categories', $categories);
     }
 }

@@ -6,6 +6,7 @@ use App\Models\category;
 use App\Models\produk;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 
 class ProduksController extends Controller
@@ -38,45 +39,84 @@ class ProduksController extends Controller
      */
     public function store(Request $apakek)
     {
-        //
-
-        $apakek->validate([
+        // 1. Validasi data
+        $data = $apakek->validate([
             'category_id' => 'required|exists:categories,id',
-            'image' => 'nullable|image|mimes:png,jpg,jpeg,gif|max:2048',
-            'name' => 'string|required|max:60',
+
+            'name' => 'required|string|max:60',
             'slug' => 'nullable|string|unique:produks,slug',
             'price' => 'required|integer',
+
             'price_art_carton' => 'nullable|integer',
             'price_art_paper' => 'nullable|integer',
             'price_art_hvs' => 'nullable|integer',
             'price_Doft' => 'nullable|integer',
             'price_glossy' => 'nullable|integer',
             'cutting_price' => 'nullable|integer',
+
             'description' => 'nullable|string',
-            'brief_description' => 'nullable|string'
+            'brief_description' => 'nullable|string',
+
+            'images' => 'required|array|min:1',
+            'images.*' => 'required|image|mimes:png,jpg,jpeg,gif|max:2048',
+
+            'alt' => 'nullable|array',
+            'alt.*' => 'nullable|string|max:255',
+
+            'sort_order' => 'nullable|integer',
         ]);
 
-        $pathImage = null;
+        // 2. Transaksi database
+        DB::transaction(function () use ($data) {
+        
+            // Simpan data produk
+            $product = produk::create([
+                'category_id' => $data['category_id'],
+                'name' => $data['name'],
+                'slug' => $data['slug'] ?? null,
+                'price' => $data['price'],
 
-        if ($apakek->image) {
-            # code...
-            $pathImage = $apakek->file('image')->store('imageproduks', 'public');
-        }
-        produk::create([
-            'category_id' => $apakek->category_id,
-            'image' => $pathImage,
-            'name' => $apakek->name,
-            'price' => $apakek->price,
-            'price_art_carton' => $apakek->price_art_carton,
-            'price_art_paper' => $apakek->price_art_paper,
-            'price_art_hvs' => $apakek->price_art_hvs,
-            'price_Doft' => $apakek->price_Doft,
-            'price_glossy' => $apakek->price_glossy,
-            'cutting_price' => $apakek->cutting_price,
-            'description' => $apakek->description,
-            'brief_description' => $apakek->brief_description,
-        ]);
-        return redirect()->route('admin.produk.index')->with('succes', 'data produk berhasil ditambahkan');
+                'price_art_carton' => $data['price_art_carton'] ?? null,
+                'price_art_paper' => $data['price_art_paper'] ?? null,
+                'price_art_hvs' => $data['price_art_hvs'] ?? null,
+                'price_Doft' => $data['price_Doft'] ?? null,
+                'price_glossy' => $data['price_glossy'] ?? null,
+                'cutting_price' => $data['cutting_price'] ?? null,
+
+                'description' => $data['description'] ?? null,
+                'brief_description' => $data['brief_description'] ?? null,
+            ]);
+
+            // 3. Simpan banyak gambar
+            $imagedata = [];
+
+            foreach ($data['images'] as $key => $file) {
+
+                $path = $file->store('imagesproduks', 'public');
+
+                // Gambar pertama menjadi gambar utama
+                if ($key === array_key_first($data['images'])) {
+                    $product->update([
+                        'image' => $path,
+                    ]);
+                }
+
+                // Siapkan data gambar galeri
+                $imagedata[] = [
+                    'path' => $path,
+                    'alt' => $data['alt'][$key] ?? $product->name,
+                    'sort_order' => $key + 1,
+                ];
+            }
+
+            // 4. Simpan seluruh gambar ke tabel product_images
+            $product->images()->createMany($imagedata);
+        });
+
+        // 5. Redirect
+        return redirect()
+            ->route('admin.produk.index')
+            ->with('success', 'Data produk berhasil ditambahkan');
     }
 
     /**
@@ -142,5 +182,6 @@ class ProduksController extends Controller
             Storage::disk('public')->delete($dataproduk->image);
         }
         $dataproduk->delete();
+        return redirect()->route('admin.produk.index')->with('succes', " produk berhasil di hapus");
     }
 }

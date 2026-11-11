@@ -31,4 +31,8 @@ class produk extends Model
     {
         return $this->belongsTo(category::class);
     }
+    public function images()
+    {
+        return $this->hasMany(ProductImage::class, 'produks_id');
+    }
 }

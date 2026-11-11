@@ -119,20 +119,18 @@
         </div>
 
         <div class="mb-3">
-            <label for="" class="form-label-custom">deskripsi</label>
-            <textarea name="description" id="editor" cols="30" rows="10" class="form-control"
-                placeholder="berikan deskripsi tentang produk">
+            <label for="editor" class="form-label-custom">Deskripsi</label>
 
-            </textarea>
-            @error('description')
-                <div class="invalid-feedback d-block">{{ $message }}</div>
-            @enderror
+            <textarea name="description" id="description" class="d-none">{ !! old('description') !! }</textarea>
+
+            <div id="editor">{!! old('description') !!}</div>
         </div>
 
         <div class="mb-3">
             <label for="" class="form-label-custom">upload gambar</label>
-            <input type="file" class="form-control" name="image">
+            <input type="file" class="form-control" name="images[]">
         </div>
+
         <div class="mb-3">
             <button type="submit" class="btn-custom btn-custom-primary">simpan</button>
             <a href="{{ url()->previous() }}" class="btn-custom btn-custom-primary">back</a>
